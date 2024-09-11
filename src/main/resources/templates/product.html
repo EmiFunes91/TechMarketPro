@@ -11,11 +11,9 @@
 		<div class="container-fluid bg-primary p-4 mt-5 ">
 			<div class="row">
 				<div class="col-md-8 offset-md-2">
-					<form action="product.html" method="get">
+					<form action="/products" method="get">
 						<div class="input-group">
-							<label>
-								<input type="text" class="form-control" name="ch">
-							</label>
+							<input type="text" class="form-control" name="ch">
 							<button class="btn btn-light text-dark ms-3 col-md-2">
 								<i class="fa-solid fa-magnifying-glass"></i> Search
 							</button>
@@ -36,7 +34,7 @@
 						<div class="card-body">
 							<div class="list-group">
 								<p class="fs-5">Category</p>
-								<a href="product.html"
+								<a href="/products"
 									th:classappend="${paramValue==''} ? 'active':''"
 									class="list-group-item list-group-item-action"
 									aria-current="true"> All </a> <a th:each="c:${categories}"
@@ -58,7 +56,7 @@
 										<div class="card card-sh">
 											<div class="card-body text-center">
 												<img alt="" th:src="@{'/img/product_img/'+${p.image}}"
-													width="150px" height="150px" src="">
+													width="150px" height="150px">
 												<p class="fs-5 text-center">[[${p.title}]]</p>
 												<div class="row text-center">
 													<p class="fs-6 fw-bold ">
@@ -110,7 +108,7 @@
 										</a></li>
 									</ul>
 								</nav>
-								</th:block>
+							</th:block>
 						</div>
 					</div>
 

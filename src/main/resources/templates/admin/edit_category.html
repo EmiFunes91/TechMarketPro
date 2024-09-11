@@ -13,14 +13,14 @@
 					<div class="card card-sh">
 						<div class="card-header text-center ">
 							<p class="fs-4">Edit Category</p>
-							<th:block th:if="${session.suchMsg}">
+							<th:block th:if="${session.succMsg}">
 								<p class="text-success fw-bold">[[${session.succMsg}]]</p>
-								<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+								<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
 							</th:block>
 
 							<th:block th:if="${session.errorMsg}">
 								<p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
-								<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+								<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
 							</th:block>
 
 						</div>
@@ -29,10 +29,8 @@
 								enctype="multipart/form-data">
 								<input type="hidden" name="id" th:value="${category.id}">
 								<div class="mb-3">
-									<label>Enter Category</label> <label>
-									<input type="text" name="name"
+									<label>Enter Category</label> <input type="text" name="name"
 										th:value="${category.name}" class="form-control">
-								</label>
 								</div>
 
 								<div class="mb-3">
@@ -60,7 +58,7 @@
 										class="form-control">
 								</div>
 								<img th:src="@{'/img/category_img/'+${category.imageName}}"
-									width="100px" height="100px" alt="" src="">
+									width="100px" height="100px">
 								<button class="btn btn-primary col-md-12 mt-2">Update</button>
 							</form>
 						</div>

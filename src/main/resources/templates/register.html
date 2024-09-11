@@ -10,20 +10,20 @@
 		<div class="container mt-5 p-5">
 			<div class="row">
 				<div class="col-md-5 p-5">
-					<img alt="" src="../static/img/ecom.png" width="100%" height="400px">
+					<img alt="" src="/img/ecom.png" width="100%" height="400px">
 				</div>
 				<div class="col-md-7 p-2">
 					<div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
 						<div class="card-header text-center">
 							<p class="fs-4 text-center">Register</p>
-							<th:block th:if="${session.suchMsg}">
-								<p class="text-success fw-bold">[[${session.suchMsg}]]</p>
-								<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+							<th:block th:if="${session.succMsg}">
+								<p class="text-success fw-bold">[[${session.succMsg}]]</p>
+								<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
 							</th:block>
 
 							<th:block th:if="${session.errorMsg}">
 								<p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
-								<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+								<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
 							</th:block>
 						</div>
 						<div class="card-body">
@@ -31,60 +31,46 @@
 								method="post">
 								<div class="row">
 									<div class="col">
-										<label class="form-label">Full Name</label> <label>
-										<input required
+										<label class="form-label">Full Name</label> <input required
 											class="form-control" name="name" type="text">
-									</label>
 									</div>
 
 									<div class="col">
-										<label class="form-label">Mobile Number</label> <label>
-										<input
+										<label class="form-label">Mobile Number</label> <input
 											required class="form-control" name="mobileNumber"
 											type="number">
-									</label>
 									</div>
 
 								</div>
 
 								<div class="mb-3">
-									<label class="form-label">Email</label> <label>
-									<input required
+									<label class="form-label">Email</label> <input required
 										class="form-control" name="email" type="email">
-								</label>
 								</div>
 
 
 								<div class="row">
 									<div class="col">
-										<label class="form-label">Address</label> <label>
-										<input required
+										<label class="form-label">Address</label> <input required
 											class="form-control" name="address" type="text">
-									</label>
 									</div>
 
 									<div class="col">
-										<label class="form-label">City</label> <label>
-										<input required
+										<label class="form-label">City</label> <input required
 											class="form-control" name="city" type="text">
-									</label>
 									</div>
 
 								</div>
 
 								<div class="row">
 									<div class="col">
-										<label class="form-label">State</label> <label>
-										<input required
+										<label class="form-label">State</label> <input required
 											class="form-control" name="state" type="text">
-									</label>
 									</div>
 
 									<div class="col">
-										<label class="form-label">Pin code</label> <label>
-										<input required
-											class="form-control" name="pin code" type="number">
-									</label>
+										<label class="form-label">Zip Code</label> <input required
+											class="form-control" name="pincode" type="number">
 									</div>
 
 								</div>
@@ -92,32 +78,22 @@
 
 								<div class="row">
 									<div class="col">
-										<label class="form-label">Password</label> <label
-											for="pass"></label><input required
-																	  class="form-control" name="password" type="password" id="pass">
+										<label class="form-label">Password</label> <input required
+											class="form-control" name="password" type="password" id="pass">
 									</div>
 
 									<div class="col">
-										<label class="form-label">Confirm Password</label> <label>
-										<input
-											required class="form-control" name="confirm password"
+										<label class="form-label">Confirm Password</label> <input
+											required class="form-control" name="confirmpassword"
 											type="password">
-									</label>
 									</div>
 
 								</div>
-
-
 
 								<div class="mb-3">
 									<label class="form-label">Profile Image</label> <input
 										class="form-control" name="img" type="file">
 								</div>
-
-
-
-
-
 
 								<button type="submit"
 									class="btn bg-primary text-white col-md-12">Register</button>
@@ -126,7 +102,7 @@
 
 						<div class="card-footer text-center">
 
-							have an account ? <a href="login.html" class="text-decoration-none">Login
+							Have an account ? <a href="/signin" class="text-decoration-none">Login
 							</a>
 						</div>
 					</div>
@@ -135,5 +111,9 @@
 		</div>
 
 	</section>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+	<script src=".././static/js/script.js"></script>
+
 </body>
 </html>

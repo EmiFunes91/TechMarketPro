@@ -19,11 +19,11 @@ public class SecurityConfig {
 
 	@Autowired
 	private AuthenticationSuccessHandler authenticationSuccessHandler;
-	
+
 	@Autowired
 	@Lazy
 	private AuthFailureHandlerImpl authenticationFailureHandler;
-	
+
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -31,7 +31,7 @@ public class SecurityConfig {
 
 	@Bean
 	public UserDetailsService userDetailsService() {
-		return new UserDetailsServiceImpl();
+		return new UserDetailsServiceImpl();  // Implementación personalizada de UserDetailsService
 	}
 
 	@Bean
@@ -43,20 +43,23 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
-	{
-		http.csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests(req->req.requestMatchers("/user/**").hasRole("USER")
-				.requestMatchers("/admin/**").hasRole("ADMIN")
-				.requestMatchers("/**").permitAll())
-				.formLogin(form->form.loginPage("/signin")
-						.loginProcessingUrl("/login")
-//						.defaultSuccessUrl("/")
-						.failureHandler(authenticationFailureHandler)
-						.successHandler(authenticationSuccessHandler))
-				.logout(LogoutConfigurer::permitAll);
-		
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http.csrf(AbstractHttpConfigurer::disable)
+				.cors(AbstractHttpConfigurer::disable)
+				.authorizeHttpRequests(req -> req
+						.requestMatchers("/user/**").hasRole("USER")  // Solo usuarios con rol USER
+						.requestMatchers("/admin/**").hasRole("ADMIN")  // Solo usuarios con rol ADMIN
+						.requestMatchers("/**").permitAll()  // Todas las demás rutas son accesibles
+				)
+				.formLogin(form -> form
+						.loginPage("/signin")  // Página personalizada de inicio de sesión
+						.loginProcessingUrl("/login")  // URL donde se procesa el inicio de sesión
+						.failureHandler(authenticationFailureHandler)  // Manejo de errores de autenticación
+						.successHandler(authenticationSuccessHandler)  // Manejo del éxito de autenticación
+				)
+				.logout(LogoutConfigurer::permitAll);  // Permitir que cualquier usuario se desloguee
+
 		return http.build();
 	}
-
 }
+

@@ -21,7 +21,7 @@
 
 							<th:block th:if="${session.errorMsg}">
 								<p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
-								<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+								<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
 							</th:block>
 						</div>
 						<div class="card-body">
@@ -29,77 +29,59 @@
 								method="post">
 								<div class="row">
 									<div class="col">
-										<label class="form-label">Full Name</label> <label>
-										<input required
+										<label class="form-label">Full Name</label> <input required
 											class="form-control" name="name" type="text">
-									</label>
 									</div>
 
 									<div class="col">
-										<label class="form-label">Mobile Number</label> <label>
-										<input
+										<label class="form-label">Mobile Number</label> <input
 											required class="form-control" name="mobileNumber"
 											type="number">
-									</label>
 									</div>
 
 								</div>
 
 								<div class="mb-3">
-									<label class="form-label">Email</label> <label>
-									<input required
+									<label class="form-label">Email</label> <input required
 										class="form-control" name="email" type="email">
-								</label>
 								</div>
 
 
 								<div class="row">
 									<div class="col">
-										<label class="form-label">Address</label> <label>
-										<input required
+										<label class="form-label">Address</label> <input required
 											class="form-control" name="address" type="text">
-									</label>
 									</div>
 
 									<div class="col">
-										<label class="form-label">City</label> <label>
-										<input required
+										<label class="form-label">City</label> <input required
 											class="form-control" name="city" type="text">
-									</label>
 									</div>
 
 								</div>
 
 								<div class="row">
 									<div class="col">
-										<label class="form-label">State</label> <label>
-										<input required
+										<label class="form-label">State</label> <input required
 											class="form-control" name="state" type="text">
-									</label>
 									</div>
 
 									<div class="col">
-										<label class="form-label">Pin code</label> <label>
-										<input required
-											class="form-control" name="pin code" type="number">
-									</label>
+										<label class="form-label">Pincode</label> <input required
+											class="form-control" name="pincode" type="number">
 									</div>
 
 								</div>
 
 								<div class="row">
 									<div class="col">
-										<label class="form-label">Password</label> <label>
-										<input required
+										<label class="form-label">Password</label> <input required
 											class="form-control" name="password" type="password">
-									</label>
 									</div>
 									<div class="col">
-										<label class="form-label">Confirm Password</label> <label>
-										<input
-											required class="form-control" name="password"
+										<label class="form-label">Confirm Password</label> <input
+											required class="form-control" name="cpassword"
 											type="password">
-									</label>
 									</div>
 								</div>
 								<div class="mb-3">
