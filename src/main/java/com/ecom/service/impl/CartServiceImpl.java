@@ -2,6 +2,7 @@ package com.ecom.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,40 +30,49 @@ public class CartServiceImpl implements CartService {
 
 	@Override
 	public Cart saveCart(Integer productId, Integer userId) {
+		Optional<Product> productOpt = productRepository.findById(productId);
+		Optional<UserDtls> userOpt = userRepository.findById(userId);
 
-		UserDtls userDtls = userRepository.findById(userId).get();
-		Product product = productRepository.findById(productId).get();
+		if (productOpt.isEmpty() || userOpt.isEmpty()) {
+			throw new IllegalArgumentException("Producto o Usuario no encontrado");
+		}
 
+		Product product = productOpt.get();
+		UserDtls user = userOpt.get();
+
+		// Buscar si ya existe un carrito con el usuario y producto
 		Cart cartStatus = cartRepository.findByProductIdAndUserId(productId, userId);
 
-		Cart cart = null;
+		Cart cart;
 
+		// Si cartStatus está vacío, se crea un nuevo carrito
 		if (ObjectUtils.isEmpty(cartStatus)) {
 			cart = new Cart();
 			cart.setProduct(product);
-			cart.setUser(userDtls);
+			cart.setUser(user);
 			cart.setQuantity(1);
-			cart.setTotalPrice(1 * product.getDiscountPrice());
+			cart.setTotalPrice(product.getDiscountPrice()); // 1 * product.getDiscountPrice()
 		} else {
+			// Si ya existe un carrito, simplemente actualizamos la cantidad y el precio total
 			cart = cartStatus;
 			cart.setQuantity(cart.getQuantity() + 1);
 			cart.setTotalPrice(cart.getQuantity() * cart.getProduct().getDiscountPrice());
 		}
-		Cart saveCart = cartRepository.save(cart);
 
-		return saveCart;
+		return cartRepository.save(cart);
 	}
 
 	@Override
 	public List<Cart> getCartsByUser(Integer userId) {
 		List<Cart> carts = cartRepository.findByUserId(userId);
 
-		Double totalOrderPrice = 0.0;
+		double totalOrderPrice = 0.0;
 		List<Cart> updateCarts = new ArrayList<>();
+
 		for (Cart c : carts) {
-			Double totalPrice = (c.getProduct().getDiscountPrice() * c.getQuantity());
+			double totalPrice = c.getProduct().getDiscountPrice() * c.getQuantity();
 			c.setTotalPrice(totalPrice);
-			totalOrderPrice = totalOrderPrice + totalPrice;
+			totalOrderPrice += totalPrice;  // Actualizamos el total de la orden
 			c.setTotalOrderPrice(totalOrderPrice);
 			updateCarts.add(c);
 		}
@@ -72,14 +82,18 @@ public class CartServiceImpl implements CartService {
 
 	@Override
 	public Integer getCountCart(Integer userId) {
-		Integer countByUserId = cartRepository.countByUserId(userId);
-		return countByUserId;
+		return cartRepository.countByUserId(userId); // Retornamos el valor directamente sin variable intermedia
 	}
 
 	@Override
 	public void updateQuantity(String sy, Integer cid) {
+		Optional<Cart> optionalCart = cartRepository.findById(cid);
 
-		Cart cart = cartRepository.findById(cid).get();
+		if (optionalCart.isEmpty()) {
+			throw new IllegalArgumentException("Carrito no encontrado con ID: " + cid);
+		}
+
+		Cart cart = optionalCart.get();
 		int updateQuantity;
 
 		if (sy.equalsIgnoreCase("de")) {
@@ -97,7 +111,8 @@ public class CartServiceImpl implements CartService {
 			cart.setQuantity(updateQuantity);
 			cartRepository.save(cart);
 		}
-
 	}
-
 }
+
+
+

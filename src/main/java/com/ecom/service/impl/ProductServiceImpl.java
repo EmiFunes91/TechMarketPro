@@ -7,6 +7,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
@@ -22,6 +24,8 @@ import com.ecom.service.ProductService;
 
 @Service
 public class ProductServiceImpl implements ProductService {
+
+	private static final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
 	@Autowired
 	private ProductRepository productRepository;
@@ -55,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Product getProductById(Integer id) {
-        return productRepository.findById(id).orElse(null);
+		return productRepository.findById(id).orElse(null);
 	}
 
 	@Override
@@ -74,9 +78,9 @@ public class ProductServiceImpl implements ProductService {
 		dbProduct.setIsActive(product.getIsActive());
 		dbProduct.setDiscount(product.getDiscount());
 
-		// 5=100*(5/100); 100-5=95
-		Double disocunt = product.getPrice() * (product.getDiscount() / 100.0);
-		Double discountPrice = product.getPrice() - disocunt;
+		// Calcular el precio con descuento
+		Double discount = product.getPrice() * (product.getDiscount() / 100.0);
+		Double discountPrice = product.getPrice() - discount;
 		dbProduct.setDiscountPrice(discountPrice);
 
 		Product updateProduct = productRepository.save(dbProduct);
@@ -84,7 +88,6 @@ public class ProductServiceImpl implements ProductService {
 		if (!ObjectUtils.isEmpty(updateProduct)) {
 
 			if (!image.isEmpty()) {
-
 				try {
 					File saveFile = new ClassPathResource("static/img").getFile();
 
@@ -93,7 +96,7 @@ public class ProductServiceImpl implements ProductService {
 					Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error("Error al guardar la imagen del producto: {}", e.getMessage());
 				}
 			}
 			return product;
@@ -103,14 +106,11 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public List<Product> getAllActiveProducts(String category) {
-		List<Product> products = null;
 		if (ObjectUtils.isEmpty(category)) {
-			products = productRepository.findByIsActiveTrue();
+			return productRepository.findByIsActiveTrue();
 		} else {
-			products = productRepository.findByCategory(category);
+			return productRepository.findByCategory(category);
 		}
-
-		return products;
 	}
 
 	@Override
@@ -126,33 +126,17 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Page<Product> getAllActiveProductPagination(Integer pageNo, Integer pageSize, String category) {
-
 		Pageable pageable = PageRequest.of(pageNo, pageSize);
-		Page<Product> pageProduct = null;
-
-		if (ObjectUtils.isEmpty(category)) {
-			pageProduct = productRepository.findByIsActiveTrue(pageable);
-		} else {
-			pageProduct = productRepository.findByCategory(pageable, category);
-		}
-		return pageProduct;
+		return ObjectUtils.isEmpty(category) ?
+				productRepository.findByIsActiveTrue(pageable) :
+				productRepository.findByCategory(pageable, category);
 	}
 
 	@Override
 	public Page<Product> searchActiveProductPagination(Integer pageNo, Integer pageSize, String category, String ch) {
-
-		Page<Product> pageProduct = null;
 		Pageable pageable = PageRequest.of(pageNo, pageSize);
-
-		pageProduct = productRepository.findByisActiveTrueAndTitleContainingIgnoreCaseOrCategoryContainingIgnoreCase(ch,
-				ch, pageable);
-
-//		if (ObjectUtils.isEmpty(category)) {
-//			pageProduct = productRepository.findByIsActiveTrue(pageable);
-//		} else {
-//			pageProduct = productRepository.findByCategory(pageable, category);
-//		}
-		return pageProduct;
+		return productRepository.findByisActiveTrueAndTitleContainingIgnoreCaseOrCategoryContainingIgnoreCase(ch, ch, pageable);
 	}
 
 }
+

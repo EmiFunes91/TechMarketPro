@@ -74,8 +74,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public List<ProductOrder> getOrdersByUser(Integer userId) {
-		List<ProductOrder> orders = orderRepository.findByUserId(userId);
-		return orders;
+        return orderRepository.findByUserId(userId);
 	}
 
 	@Override
@@ -84,8 +83,7 @@ public class OrderServiceImpl implements OrderService {
 		if (findById.isPresent()) {
 			ProductOrder productOrder = findById.get();
 			productOrder.setStatus(status);
-			ProductOrder updateOrder = orderRepository.save(productOrder);
-			return updateOrder;
+            return orderRepository.save(productOrder);
 		}
 		return null;
 	}

@@ -9,6 +9,8 @@ import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
@@ -41,6 +43,8 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
+
+	private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
 	@Autowired
 	private CategoryService categoryService;
@@ -91,24 +95,28 @@ public class AdminController {
 
 	@PostMapping("/saveProduct")
 	public String saveProduct(@ModelAttribute Product product, @RequestParam("file") MultipartFile image,
-							  HttpSession session) throws IOException {
+							  HttpSession session) {
 
 		String imageName = image.isEmpty() ? "default.jpg" : image.getOriginalFilename();
-
 		product.setImage(imageName);
 		product.setDiscount(0);
 		product.setDiscountPrice(product.getPrice());
 		Product saveProduct = productService.saveProduct(product);
 
-		if (!ObjectUtils.isEmpty(saveProduct)) {
-			File saveFile = new ClassPathResource("static/img").getFile();
-			Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "product_img" + File.separator
-					+ image.getOriginalFilename());
+		try {
+			if (!ObjectUtils.isEmpty(saveProduct)) {
+				File saveFile = new ClassPathResource("static/img").getFile();
+				Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "product_img" + File.separator
+						+ image.getOriginalFilename());
 
-			Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-			session.setAttribute("succMsg", "Product saved successfully");
-		} else {
-			session.setAttribute("errorMsg", "Something went wrong on the server");
+				Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+				session.setAttribute("succMsg", "Product saved successfully");
+			} else {
+				session.setAttribute("errorMsg", "Something went wrong on the server");
+			}
+		} catch (IOException e) {
+			logger.error("Error saving product image: ", e);
+			session.setAttribute("errorMsg", "Failed to save product image");
 		}
 
 		return "redirect:/admin/loadAddProduct";
@@ -321,7 +329,7 @@ public class AdminController {
 		try {
 			commonUtil.sendMailForProductOrder(updateOrder, status);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error sending order update email: ", e);
 		}
 
 		if (!ObjectUtils.isEmpty(updateOrder)) {
@@ -404,5 +412,6 @@ public class AdminController {
 		return "redirect:/admin/profile";
 	}
 }
+
 
 

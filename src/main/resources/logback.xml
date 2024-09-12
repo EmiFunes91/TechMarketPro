@@ -26,7 +26,6 @@
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_HOME}/app.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <!-- Rotación diaria y compresión con GZip -->
             <fileNamePattern>${LOG_HOME}/app-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
             <maxFileSize>${MAX_LOG_FILE_SIZE}</maxFileSize>
             <maxHistory>30</maxHistory>
@@ -35,13 +34,7 @@
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
         </encoder>
-        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-            <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
-                <marker>Password</marker>
-            </evaluator>
-            <OnMatch>DENY</OnMatch>
-            <OnMismatch>NEUTRAL</OnMismatch>
-        </filter>
+        <!-- Se quita EvaluatorFilter mal colocado -->
     </appender>
 
     <!-- Archivo de errores comprimido con rotación por tamaño -->
@@ -56,13 +49,7 @@
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
         </encoder>
-        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-            <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
-                <marker>Password</marker>
-            </evaluator>
-            <OnMatch>DENY</OnMatch>
-            <OnMismatch>NEUTRAL</OnMismatch>
-        </filter>
+        <!-- Se quita EvaluatorFilter mal colocado -->
     </appender>
 
     <!-- Notificación por correo en caso de errores críticos -->
@@ -130,4 +117,6 @@
     </springProfile>
 
 </configuration>
+
+
 

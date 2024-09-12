@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +25,8 @@ import com.ecom.util.AppConstant;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
 	@Autowired
 	private UserRepository userRepository;
@@ -39,7 +43,7 @@ public class UserServiceImpl implements UserService {
 
 		String encodePassword = passwordEncoder.encode(user.getPassword());
 		user.setPassword(encodePassword);
-        return userRepository.save(user);
+		return userRepository.save(user);
 	}
 
 	@Override
@@ -54,7 +58,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Boolean updateAccountStatus(Integer id, Boolean status) {
-
 		Optional<UserDtls> findByuser = userRepository.findById(id);
 
 		if (findByuser.isPresent()) {
@@ -83,10 +86,8 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean unlockAccountTimeExpired(UserDtls user) {
-
 		long lockTime = user.getLockTime().getTime();
 		long unLockTime = lockTime + AppConstant.UNLOCK_DURATION_TIME;
-
 		long currentTime = System.currentTimeMillis();
 
 		if (unLockTime < currentTime) {
@@ -102,7 +103,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void resetAttempt(int userId) {
-
+		// Método vacío, se podría implementar en el futuro.
 	}
 
 	@Override
@@ -124,23 +125,27 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserDtls updateUserProfile(UserDtls user, MultipartFile img) {
+		Optional<UserDtls> optionalUser = userRepository.findById(user.getId());
 
-		UserDtls dbUser = userRepository.findById(user.getId()).get();
+		if (optionalUser.isEmpty()) {
+			logger.warn("Usuario no encontrado con ID: {}", user.getId());
+			return null;
+		}
+
+		UserDtls dbUser = optionalUser.get();
 
 		if (!img.isEmpty()) {
 			dbUser.setProfileImage(img.getOriginalFilename());
 		}
 
-		if (!ObjectUtils.isEmpty(dbUser)) {
+		dbUser.setName(user.getName());
+		dbUser.setMobileNumber(user.getMobileNumber());
+		dbUser.setAddress(user.getAddress());
+		dbUser.setCity(user.getCity());
+		dbUser.setState(user.getState());
+		dbUser.setPincode(user.getPincode());
 
-			dbUser.setName(user.getName());
-			dbUser.setMobileNumber(user.getMobileNumber());
-			dbUser.setAddress(user.getAddress());
-			dbUser.setCity(user.getCity());
-			dbUser.setState(user.getState());
-			dbUser.setPincode(user.getPincode());
-			dbUser = userRepository.save(dbUser);
-		}
+		dbUser = userRepository.save(dbUser);
 
 		try {
 			if (!img.isEmpty()) {
@@ -149,11 +154,10 @@ public class UserServiceImpl implements UserService {
 				Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "profile_img" + File.separator
 						+ img.getOriginalFilename());
 
-//			System.out.println(path);
 				Files.copy(img.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error al guardar la imagen de perfil: {}", e.getMessage());
 		}
 
 		return dbUser;
@@ -168,8 +172,7 @@ public class UserServiceImpl implements UserService {
 
 		String encodePassword = passwordEncoder.encode(user.getPassword());
 		user.setPassword(encodePassword);
-		UserDtls saveUser = userRepository.save(user);
-		return saveUser;
+		return userRepository.save(user);
 	}
 
 	@Override
