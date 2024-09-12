@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Variables de entorno -->
+    <property name="LOG_HOME" value="logs" />
+    <property name="MAX_LOG_FILE_SIZE" value="10MB" />
+    <property name="TOTAL_LOG_SIZE_CAP" value="1GB" />
+    <property name="ERROR_LOG_SIZE_CAP" value="500MB" />
+
+    <!-- Consola: Appender para salida en la consola (solo desarrollo) -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Filtro para remover información sensible de los logs -->
+    <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
+        <name>PasswordFilter</name>
+        <Marker>Password</Marker>
+        <OnMatch>DENY</OnMatch>
+        <OnMismatch>NEUTRAL</OnMismatch>
+    </turboFilter>
+
+    <!-- Compresión de logs en archivo, con rotación diaria y por tamaño -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- Rotación diaria y compresión con GZip -->
+            <fileNamePattern>${LOG_HOME}/app-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>${MAX_LOG_FILE_SIZE}</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>${TOTAL_LOG_SIZE_CAP}</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+                <marker>Password</marker>
+            </evaluator>
+            <OnMatch>DENY</OnMatch>
+            <OnMismatch>NEUTRAL</OnMismatch>
+        </filter>
+    </appender>
+
+    <!-- Archivo de errores comprimido con rotación por tamaño -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/error-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>${MAX_LOG_FILE_SIZE}</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>${ERROR_LOG_SIZE_CAP}</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+                <marker>Password</marker>
+            </evaluator>
+            <OnMatch>DENY</OnMatch>
+            <OnMismatch>NEUTRAL</OnMismatch>
+        </filter>
+    </appender>
+
+    <!-- Notificación por correo en caso de errores críticos -->
+    <appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
+        <smtpHost>smtp.tuservidor.com</smtpHost>
+        <to>admin@empresa.com</to>
+        <from>noreply@empresa.com</from>
+        <subject>Error Crítico en Aplicación - ${HOSTNAME}</subject>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+        </layout>
+        <triggeringPolicy class="ch.qos.logback.classic.spi.ThresholdFilter">
+            <level>ERROR</level>
+        </triggeringPolicy>
+    </appender>
+
+    <!-- Logs asíncronos para mejorar el rendimiento del sistema -->
+    <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE" />
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>5000</queueSize>
+    </appender>
+
+    <appender name="ASYNC_ERROR_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="ERROR_FILE" />
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>5000</queueSize>
+    </appender>
+
+    <appender name="ASYNC_EMAIL" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="EMAIL" />
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>1000</queueSize>
+    </appender>
+
+    <!-- Configuración de logs generales -->
+    <root level="INFO">
+        <appender-ref ref="ASYNC_FILE" />
+    </root>
+
+    <!-- Solo errores críticos en archivo y correo electrónico -->
+    <logger name="com.ecom" level="ERROR">
+        <appender-ref ref="ASYNC_ERROR_FILE" />
+        <appender-ref ref="ASYNC_EMAIL" />
+    </logger>
+
+    <!-- Configuración específica para desarrollo -->
+    <springProfile name="dev">
+        <root level="DEBUG">
+            <appender-ref ref="STDOUT" />
+            <appender-ref ref="ASYNC_FILE" />
+        </root>
+    </springProfile>
+
+    <!-- Configuración específica para producción -->
+    <springProfile name="prod">
+        <root level="INFO">
+            <appender-ref ref="ASYNC_FILE" />
+        </root>
+
+        <logger name="com.ecom" level="ERROR">
+            <appender-ref ref="ASYNC_ERROR_FILE" />
+            <appender-ref ref="ASYNC_EMAIL" />
+        </logger>
+    </springProfile>
+
+</configuration>
+

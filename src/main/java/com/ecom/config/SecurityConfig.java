@@ -57,7 +57,13 @@ public class SecurityConfig {
 						.failureHandler(authenticationFailureHandler)  // Manejo de errores de autenticación
 						.successHandler(authenticationSuccessHandler)  // Manejo del éxito de autenticación
 				)
-				.logout(LogoutConfigurer::permitAll);  // Permitir que cualquier usuario se desloguee
+				.logout(logout -> logout
+						.logoutUrl("/logout")  // URL para el logout
+						.logoutSuccessUrl("/")  // Redirecciona a la página principal tras el logout
+						.invalidateHttpSession(true)  // Invalidar sesión tras logout
+						.clearAuthentication(true)  // Limpiar autenticación
+						.permitAll()  // Permitir que cualquiera se desloguee
+				);
 
 		return http.build();
 	}

@@ -20,7 +20,6 @@ import com.ecom.model.Category;
 import com.ecom.model.OrderRequest;
 import com.ecom.model.ProductOrder;
 import com.ecom.model.UserDtls;
-import com.ecom.repository.UserRepository;
 import com.ecom.service.CartService;
 import com.ecom.service.CategoryService;
 import com.ecom.service.OrderService;
@@ -29,10 +28,15 @@ import com.ecom.util.CommonUtil;
 import com.ecom.util.OrderStatus;
 
 import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Controller
 @RequestMapping("/user")
 public class UserController {
+
+	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
 	@Autowired
 	private UserService userService;
 	@Autowired
@@ -103,8 +107,7 @@ public class UserController {
 
 	private UserDtls getLoggedInUserDetails(Principal p) {
 		String email = p.getName();
-		UserDtls userDtls = userService.getUserByEmail(email);
-		return userDtls;
+		return userService.getUserByEmail(email);
 	}
 
 	@GetMapping("/orders")
@@ -123,7 +126,6 @@ public class UserController {
 
 	@PostMapping("/save-order")
 	public String saveOrder(@ModelAttribute OrderRequest request, Principal p) throws Exception {
-		// System.out.println(request);
 		UserDtls user = getLoggedInUserDetails(p);
 		orderService.saveOrder(user.getId(), request);
 
@@ -156,17 +158,17 @@ public class UserController {
 		}
 
 		ProductOrder updateOrder = orderService.updateOrderStatus(id, status);
-		
+
 		try {
 			commonUtil.sendMailForProductOrder(updateOrder, status);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error sending mail for product order update: {}", e.getMessage(), e);
 		}
 
 		if (!ObjectUtils.isEmpty(updateOrder)) {
 			session.setAttribute("succMsg", "Status Updated");
 		} else {
-			session.setAttribute("errorMsg", "status not updated");
+			session.setAttribute("errorMsg", "Status not updated");
 		}
 		return "redirect:/user/user-orders";
 	}
@@ -189,7 +191,7 @@ public class UserController {
 
 	@PostMapping("/change-password")
 	public String changePassword(@RequestParam String newPassword, @RequestParam String currentPassword, Principal p,
-			HttpSession session) {
+								 HttpSession session) {
 		UserDtls loggedInUserDetails = getLoggedInUserDetails(p);
 
 		boolean matches = passwordEncoder.matches(currentPassword, loggedInUserDetails.getPassword());
@@ -201,7 +203,7 @@ public class UserController {
 			if (ObjectUtils.isEmpty(updateUser)) {
 				session.setAttribute("errorMsg", "Password not updated !! Error in server");
 			} else {
-				session.setAttribute("succMsg", "Password Updated sucessfully");
+				session.setAttribute("succMsg", "Password Updated successfully");
 			}
 		} else {
 			session.setAttribute("errorMsg", "Current Password incorrect");
@@ -209,5 +211,5 @@ public class UserController {
 
 		return "redirect:/user/profile";
 	}
-
 }
+

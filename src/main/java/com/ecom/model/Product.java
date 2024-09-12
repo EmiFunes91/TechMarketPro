@@ -33,12 +33,17 @@ public class Product {
 
 	private int stock;
 
-	private String image;
+	@Setter
+    private String image;
 
-	private int discount;
-	
-	private Double discountPrice;
+	@Getter
+    @Setter
+    private int discount;
+
+	@Getter
+    @Setter
+    private Double discountPrice;
 	
 	private Boolean isActive;
-	
+
 }
