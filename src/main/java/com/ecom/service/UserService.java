@@ -8,32 +8,33 @@ import com.ecom.model.UserDtls;
 
 public interface UserService {
 
-	UserDtls saveUser(UserDtls user);
+    UserDtls saveUser(UserDtls user);
 
-	UserDtls getUserByEmail(String email);
+    UserDtls getUserByEmail(String email);
 
-	List<UserDtls> getUsers(String role);
+    List<UserDtls> getUsers(String role);
 
-	Boolean updateAccountStatus(Integer id, Boolean status);
+    Boolean updateAccountStatus(Integer id, Boolean status);
 
-	void increaseFailedAttempt(UserDtls user);
+    void increaseFailedAttempt(UserDtls user);
 
-	void userAccountLock(UserDtls user);
+    void userAccountLock(UserDtls user);
 
-	boolean unlockAccountTimeExpired(UserDtls user);
+    boolean unlockAccountTimeExpired(UserDtls user);
 
-	void resetAttempt(int userId);
+    void resetAttempt(int userId);
 
-	void updateUserResetToken(String email, String resetToken);
+    void updateUserResetToken(String email, String resetToken);
 
-	UserDtls getUserByToken(String token);
+    UserDtls getUserByToken(String token);
 
-	UserDtls updateUser(UserDtls user);
+    UserDtls updateUser(UserDtls user);
 
-	UserDtls updateUserProfile(UserDtls user, MultipartFile img);
+    UserDtls updateUserProfile(UserDtls user, MultipartFile img);
 
-	UserDtls saveAdmin(UserDtls user);
+    UserDtls saveAdmin(UserDtls user);
 
-	Boolean existsEmail(String email);
+    Boolean existsEmail(String email);
 
+    void sendVerificationEmail(UserDtls user);
 }

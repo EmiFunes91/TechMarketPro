@@ -49,6 +49,12 @@ public class UserDtls {
 	private Integer failedAttempt;
 
 	private Date lockTime;
+
+	// Token para la verificación por correo
+	private String verificationToken;
+
+	// Campo para saber si la cuenta está verificada
+	private boolean accountVerified;
 	
 	private String resetToken;
 
