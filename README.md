@@ -7,38 +7,38 @@ Esta plataforma de e-commerce se encuentra en desarrollo y está diseñada para 
 
 🔧 Tecnologías Utilizadas
 
-Lenguaje: Java
+● Lenguaje: Java
 
-Framework: Spring Boot, Spring Security
+● Framework: Spring Boot, Spring Security
 
-Frontend: React, Thymeleaf
+● Frontend: React, Thymeleaf
 
-Base de Datos: MySQL
+● Base de Datos: MySQL
 
-Pasarela de Pago: Integración con Mercado Pago
+● Pasarela de Pago: Integración con Mercado Pago
 
-Autenticación y Autorización: JWT, Spring Security
+● Autenticación y Autorización: JWT, Spring Security
 
-Manejo de Dependencias: Maven
+● Manejo de Dependencias: Maven
 
 
 🚀 Características
 
-Plataforma de administración para gestionar productos, usuarios y pedidos.
+● Plataforma de administración para gestionar productos, usuarios y pedidos.
 
-Sistema de autenticación y autorización basado en roles.
+● Sistema de autenticación y autorización basado en roles.
 
-Integración de pasarela de pago con Mercado Pago.
+● Integración de pasarela de pago con Mercado Pago.
 
-Backend escalable preparado para soportar alta carga de transacciones.
+● Backend escalable preparado para soportar alta carga de transacciones.
 
-Frontend desarrollado con React y Thymeleaf para una experiencia de usuario fluida.
+● Frontend desarrollado con React y Thymeleaf para una experiencia de usuario fluida.
 
 
 📈 Próximos Pasos
 
-Completar la integración con otras pasarelas de pago.
+● Completar la integración con otras pasarelas de pago.
 
-Implementar carrito de compras y wishlist.
+● Implementar carrito de compras y wishlist.
 
-Mejorar el sistema de notificaciones para alertas y seguimiento de pedidos.
+● Mejorar el sistema de notificaciones para alertas y seguimiento de pedidos.
