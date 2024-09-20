@@ -21,7 +21,6 @@ Autenticación y Autorización: JWT, Spring Security
 
 Manejo de Dependencias: Maven
 
-Despliegue: Docker
 
 🚀 Características
 
