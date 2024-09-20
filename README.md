@@ -4,8 +4,8 @@ Plataforma de E-commerce (En Desarrollo)
 
 Esta plataforma de e-commerce se encuentra en desarrollo y está diseñada para integrar todas las funcionalidades necesarias para gestionar una tienda en línea. Incluye administración de productos, usuarios y pedidos, así como una pasarela de pago para realizar transacciones de manera segura. El proyecto busca ser un sistema completo y escalable, preparado para futuras expansiones y mejoras.
 
-🔧 Tecnologías Utilizadas
 
+🔧 Tecnologías Utilizadas
 
 Lenguaje: Java
 
@@ -33,6 +33,7 @@ Integración de pasarela de pago con Mercado Pago.
 Backend escalable preparado para soportar alta carga de transacciones.
 
 Frontend desarrollado con React y Thymeleaf para una experiencia de usuario fluida.
+
 
 📈 Próximos Pasos
 
